@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="fill_parent"
+              android:layout_height="fill_parent"
+        >
+    <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="473dp"
+            android:id="@+id/scrollView">
+        <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/messages"
+                android:text="Hello there! Send your message below:"/>
+    </ScrollView>
+    <LinearLayout
+
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:gravity="bottom">
+        <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight=".5"
+                android:id="@+id/sendText" android:inputType="text"
+                android:hint="What would you like to say?"
+                android:gravity="bottom|left"/>
+        <Button
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Send"
+                android:id="@+id/button"
+                android:layout_gravity="bottom|right"/>
+            </LinearLayout>
+</LinearLayout>
+
