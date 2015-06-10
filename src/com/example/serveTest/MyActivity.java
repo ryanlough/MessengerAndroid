@@ -23,7 +23,7 @@ public class MyActivity extends Activity {
   private final String USER_AGENT = "Mozilla/5.0";
   private EditText input_field;
   private TextView message_field;
-  private final String NAME = "Ryan";
+  private String name;
 
   /**
    * Called when the activity is first created.
@@ -31,22 +31,33 @@ public class MyActivity extends Activity {
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+
+    setContentView(R.layout.login);
+
+    Button loginButton = (Button) findViewById(R.id.login);
+    loginButton.setOnClickListener(
+        new View.OnClickListener() {
+          public void onClick(View view) {
+            name = ((EditText)findViewById(R.id.name)).getText().toString();
+            startChatView();
+          }
+        }
+    );
+
+  }
+
+  public void startChatView() {
     setContentView(R.layout.main);
 
     input_field = (EditText)findViewById(R.id.sendText);
     message_field = (TextView)findViewById(R.id.messages);
-    //TextView t=new TextView(this);
-    //t=(TextView)findViewById(R.id.messages);
-    //INPUT_FIELD = (EditText)findViewById(R.id.sendText);
 
 
 
-    Button mButton = (Button)findViewById(R.id.button);
-    mButton.setOnClickListener(
-        new View.OnClickListener()
-        {
-          public void onClick(View view)
-          {
+    Button sendButton = (Button)findViewById(R.id.button);
+    sendButton.setOnClickListener(
+        new View.OnClickListener() {
+          public void onClick(View view) {
             try {
               sendPost(input_field.getText().toString());
             } catch (Exception e) {
@@ -57,7 +68,7 @@ public class MyActivity extends Activity {
               String response = sendGet();
               JSONArray jsonArray = new JSONArray(response);
 
-              for(int i = 0; i < jsonArray.length(); i++) {
+              for (int i = 0; i < jsonArray.length(); i++) {
                 String name = jsonArray.getJSONObject(i).getString("name");
                 String message = jsonArray.getJSONObject(i).getString("message");
 
@@ -126,7 +137,7 @@ public class MyActivity extends Activity {
     con.setRequestProperty("User-Agent", USER_AGENT);
     con.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
 
-    String urlParameters = "{\"name\":\"" + NAME + "\",\"message\":\"" + msg + "\"}";
+    String urlParameters = "{\"name\":\"" + name + "\",\"message\":\"" + msg + "\"}";
 
     // Send post request
     con.setDoOutput(true);
