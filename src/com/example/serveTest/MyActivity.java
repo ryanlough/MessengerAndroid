@@ -69,17 +69,25 @@ public class MyActivity extends Activity {
     sendButton.setOnClickListener(
         new View.OnClickListener() {
           public void onClick(View view) {
+            if(input_field.getText().toString().isEmpty()) {
+              return;
+            }
             //Hide the keyboard
-            InputMethodManager inputManager = (InputMethodManager)
-                getSystemService(Context.INPUT_METHOD_SERVICE);
-            inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
-                                                 InputMethodManager.HIDE_NOT_ALWAYS);
+            try {
+              InputMethodManager inputManager = (InputMethodManager)
+                  getSystemService(Context.INPUT_METHOD_SERVICE);
+              inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
+                                                   InputMethodManager.HIDE_NOT_ALWAYS);
+            }
+            catch (NullPointerException e) {
+              Log.e("Error Hiding Keyboard: ", e.getMessage());
+            }
 
             try {
               sendPost(input_field.getText().toString());
               input_field.getText().clear();
             } catch (Exception e) {
-              Log.e("Failed POST request:", e.getMessage());
+              Log.e("Failed POST request: ", e.getMessage());
             }
 
             try {
