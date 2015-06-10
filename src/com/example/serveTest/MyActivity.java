@@ -1,11 +1,13 @@
 package com.example.serveTest;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ScrollView;
@@ -40,6 +42,13 @@ public class MyActivity extends Activity {
     loginButton.setOnClickListener(
         new View.OnClickListener() {
           public void onClick(View view) {
+            //Hide the keyboard
+            InputMethodManager inputManager = (InputMethodManager)
+                getSystemService(Context.INPUT_METHOD_SERVICE);
+            inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
+                                                 InputMethodManager.HIDE_NOT_ALWAYS);
+
+            findViewById(R.id.login).requestFocus();
             name = ((EditText)findViewById(R.id.name)).getText().toString();
             startChatView();
           }
