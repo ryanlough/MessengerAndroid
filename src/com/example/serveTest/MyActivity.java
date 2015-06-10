@@ -24,7 +24,7 @@ import java.net.URL;
 public class MyActivity extends Activity {
 
   private final String USER_AGENT = "Mozilla/5.0";
-  private EditText input_field;
+  private EditText input_name, input_field;
   private TextView message_field;
   private String name;
 
@@ -37,19 +37,27 @@ public class MyActivity extends Activity {
     requestWindowFeature(Window.FEATURE_NO_TITLE);
 
     setContentView(R.layout.login);
+    input_name = (EditText)findViewById(R.id.name);
 
     Button loginButton = (Button) findViewById(R.id.login);
     loginButton.setOnClickListener(
         new View.OnClickListener() {
           public void onClick(View view) {
-            //Hide the keyboard
-            InputMethodManager inputManager = (InputMethodManager)
-                getSystemService(Context.INPUT_METHOD_SERVICE);
-            inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
-                                                 InputMethodManager.HIDE_NOT_ALWAYS);
+            name = input_name.getText().toString();
+            if(name.isEmpty()) {
+              return;
+            }
 
-            findViewById(R.id.login).requestFocus();
-            name = ((EditText)findViewById(R.id.name)).getText().toString();
+            //Hide the keyboard
+            try {
+              InputMethodManager inputManager = (InputMethodManager)
+                  getSystemService(Context.INPUT_METHOD_SERVICE);
+              inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
+                                                   InputMethodManager.HIDE_NOT_ALWAYS);
+            }
+            catch (NullPointerException e) {
+              Log.e("Error Hiding Keyboard: ", e.getMessage());
+            }
             startChatView();
           }
         }
