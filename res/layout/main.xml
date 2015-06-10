@@ -3,11 +3,10 @@
               android:orientation="vertical"
               android:layout_width="fill_parent"
               android:layout_height="fill_parent"
-              android:descendantFocusability="beforeDescendants"
-              android:focusableInTouchMode="true">
+              android:fitsSystemWindows="true">
     <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="473dp"
+            android:layout_height="500dp"
             android:id="@+id/scrollView">
         <TextView
                 android:layout_width="fill_parent"

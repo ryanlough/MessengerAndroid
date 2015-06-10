@@ -69,6 +69,12 @@ public class MyActivity extends Activity {
     sendButton.setOnClickListener(
         new View.OnClickListener() {
           public void onClick(View view) {
+            //Hide the keyboard
+            InputMethodManager inputManager = (InputMethodManager)
+                getSystemService(Context.INPUT_METHOD_SERVICE);
+            inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
+                                                 InputMethodManager.HIDE_NOT_ALWAYS);
+
             try {
               sendPost(input_field.getText().toString());
               input_field.getText().clear();
