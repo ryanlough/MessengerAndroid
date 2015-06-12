@@ -30,13 +30,17 @@ public class MyActivity extends Activity {
 
   /**
    * Called when the activity is first created.
+   *
+   * Opens "login" screen which sets the users name and sends them into the chat-room.
    */
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    //Remove the header bar
     requestWindowFeature(Window.FEATURE_NO_TITLE);
 
     setContentView(R.layout.login);
+
     input_name = (EditText)findViewById(R.id.name);
 
     Button loginButton = (Button) findViewById(R.id.login);
@@ -65,6 +69,9 @@ public class MyActivity extends Activity {
 
   }
 
+  /**
+   * Sends user into chat room and allows them to send / receive messages.
+   */
   public void startChatView() {
     setContentView(R.layout.main);
 
@@ -98,6 +105,8 @@ public class MyActivity extends Activity {
               Log.e("Failed POST request: ", e.getMessage());
             }
 
+            // TODO Refactor this bit so that it displays new messages correctly.
+            // TODO Use Google Cloud Messaging to remove need to constantly check for messages.
             try {
               String response = sendGet();
               JSONArray jsonArray = new JSONArray(response);
@@ -130,7 +139,7 @@ public class MyActivity extends Activity {
 
   // HTTP GET request
   private String sendGet() throws Exception {
-
+    //Messaging API Link -- currently set within local network
     String url = "http://192.168.0.10:8080/todos";
 
     URL obj = new URL(url);
@@ -142,9 +151,7 @@ public class MyActivity extends Activity {
     //add request header
     con.setRequestProperty("User-Agent", USER_AGENT);
 
-    Log.i("sendGET", "\nSending 'GET' request to URL : " + url);
     int responseCode = con.getResponseCode();
-    Log.i("sendGet", "Response Code : " + responseCode);
 
     BufferedReader in = new BufferedReader(
         new InputStreamReader(con.getInputStream()));
@@ -161,8 +168,9 @@ public class MyActivity extends Activity {
 
   // HTTP POST request
   private void sendPost(String msg) throws Exception {
-
+    //Messaging API Link -- currently set within local network
     String url = "http://192.168.0.10:8080/todos";
+
     URL obj = new URL(url);
     HttpURLConnection con = (HttpURLConnection) obj.openConnection();
 
@@ -181,9 +189,6 @@ public class MyActivity extends Activity {
     wr.close();
 
     int responseCode = con.getResponseCode();
-    System.out.println("\nSending 'POST' request to URL : " + url);
-    System.out.println("Post parameters : " + urlParameters);
-    System.out.println("Response Code : " + responseCode);
 
     BufferedReader in = new BufferedReader(
         new InputStreamReader(con.getInputStream()));
@@ -194,9 +199,5 @@ public class MyActivity extends Activity {
       response.append(inputLine);
     }
     in.close();
-
-    //print result
-    System.out.println(response.toString());
-
   }
 }
