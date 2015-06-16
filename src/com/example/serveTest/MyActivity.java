@@ -140,7 +140,7 @@ public class MyActivity extends Activity {
   // HTTP GET request
   private String sendGet() throws Exception {
     //Messaging API Link -- currently set within local network
-    String url = "http://192.168.0.10:8080/todos";
+    String url = "http://192.168.0.10:8080/posts";
 
     URL obj = new URL(url);
     HttpURLConnection con = (HttpURLConnection) obj.openConnection();
@@ -169,7 +169,7 @@ public class MyActivity extends Activity {
   // HTTP POST request
   private void sendPost(String msg) throws Exception {
     //Messaging API Link -- currently set within local network
-    String url = "http://192.168.0.10:8080/todos";
+    String url = "http://192.168.0.10:8080/posts";
 
     URL obj = new URL(url);
     HttpURLConnection con = (HttpURLConnection) obj.openConnection();
