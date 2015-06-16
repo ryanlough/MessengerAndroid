@@ -24,6 +24,8 @@ import java.net.URL;
 public class MyActivity extends Activity {
 
   private final String USER_AGENT = "Mozilla/5.0";
+  //Messaging API Link -- currently set within local network
+  private final String URL = "http://192.168.0.10:8080/posts";
   private EditText input_name, input_field;
   private TextView message_field;
   private String name;
@@ -137,12 +139,10 @@ public class MyActivity extends Activity {
     StrictMode.setThreadPolicy(policy);
   }
 
+  // TODO Refactor GET and SET to remove duplicate code.
   // HTTP GET request
   private String sendGet() throws Exception {
-    //Messaging API Link -- currently set within local network
-    String url = "http://192.168.0.10:8080/posts";
-
-    URL obj = new URL(url);
+    URL obj = new URL(URL);
     HttpURLConnection con = (HttpURLConnection) obj.openConnection();
 
     // optional default is GET
@@ -168,13 +168,10 @@ public class MyActivity extends Activity {
 
   // HTTP POST request
   private void sendPost(String msg) throws Exception {
-    //Messaging API Link -- currently set within local network
-    String url = "http://192.168.0.10:8080/posts";
-
-    URL obj = new URL(url);
+    URL obj = new URL(URL);
     HttpURLConnection con = (HttpURLConnection) obj.openConnection();
 
-    //add reuqest header
+    //add request header
     con.setRequestMethod("POST");
     con.setRequestProperty("User-Agent", USER_AGENT);
     con.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
