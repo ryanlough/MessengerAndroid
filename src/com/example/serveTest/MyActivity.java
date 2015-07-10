@@ -1,7 +1,10 @@
 package com.example.serveTest;
 
+import com.google.android.gms.gcm.GoogleCloudMessaging;
+
 import android.app.Activity;
 import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.util.Log;
@@ -17,6 +20,7 @@ import org.json.JSONArray;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -25,10 +29,14 @@ public class MyActivity extends Activity {
 
   private final String USER_AGENT = "Mozilla/5.0";
   //Messaging API Link -- currently set within local network
-  private final String URL = "http://192.168.0.10:8080/posts";
+  private final String URL = "http://192.168.1.147:8080/posts";
   private EditText input_name, input_field;
   private TextView message_field;
   private String name;
+
+  GoogleCloudMessaging gcm;
+  String regid;
+  String PROJECT_NUMBER = "618780476868";
 
   /**
    * Called when the activity is first created.
@@ -80,7 +88,7 @@ public class MyActivity extends Activity {
     input_field = (EditText)findViewById(R.id.sendText);
     message_field = (TextView)findViewById(R.id.messages);
 
-
+getRegId();
 
     Button sendButton = (Button)findViewById(R.id.button);
     sendButton.setOnClickListener(
@@ -137,6 +145,33 @@ public class MyActivity extends Activity {
 
     StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
     StrictMode.setThreadPolicy(policy);
+  }
+
+  public void getRegId(){
+    new AsyncTask<Void, Void, String>() {
+      @Override
+      protected String doInBackground(Void... params) {
+        String msg = "";
+        try {
+          if (gcm == null) {
+            gcm = GoogleCloudMessaging.getInstance(getApplicationContext());
+          }
+          regid = gcm.register(PROJECT_NUMBER);
+          msg = "Device registered, registration ID=" + regid;
+          Log.i("GCM",  msg);
+
+        } catch (IOException ex) {
+          msg = "Error :" + ex.getMessage();
+
+        }
+        return msg;
+      }
+
+      @Override
+      protected void onPostExecute(String msg) {
+        message_field.setText(msg + "\n");
+      }
+    }.execute(null, null, null);
   }
 
   // TODO Refactor GET and SET to remove duplicate code.
