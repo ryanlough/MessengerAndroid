@@ -29,14 +29,15 @@ public class MyActivity extends Activity {
 
   private final String USER_AGENT = "Mozilla/5.0";
   //Messaging API Link -- currently set within local network
-  private final String URL = "http://192.168.1.147:8080/posts";
+  private final String BASE_URL = "http://192.168.1.147:8080/";
   private EditText input_name, input_field;
   private TextView message_field;
   private String name;
 
-  GoogleCloudMessaging gcm;
-  String regid;
-  String PROJECT_NUMBER = "618780476868";
+  //Google Cloud Messaging variables
+  private GoogleCloudMessaging gcm;
+  private String regid;
+  private String PROJECT_NUMBER = "618780476868";
 
   /**
    * Called when the activity is first created.
@@ -83,12 +84,13 @@ public class MyActivity extends Activity {
    * Sends user into chat room and allows them to send / receive messages.
    */
   public void startChatView() {
+    //GCM register
+    getRegId();
+
     setContentView(R.layout.main);
 
     input_field = (EditText)findViewById(R.id.sendText);
     message_field = (TextView)findViewById(R.id.messages);
-
-getRegId();
 
     Button sendButton = (Button)findViewById(R.id.button);
     sendButton.setOnClickListener(
@@ -109,7 +111,7 @@ getRegId();
             }
 
             try {
-              sendPost(input_field.getText().toString());
+              sendPost(false, input_field.getText().toString());
               input_field.getText().clear();
             } catch (Exception e) {
               Log.e("Failed POST request: ", e.getMessage());
@@ -151,25 +153,27 @@ getRegId();
     new AsyncTask<Void, Void, String>() {
       @Override
       protected String doInBackground(Void... params) {
-        String msg = "";
         try {
           if (gcm == null) {
             gcm = GoogleCloudMessaging.getInstance(getApplicationContext());
           }
           regid = gcm.register(PROJECT_NUMBER);
-          msg = "Device registered, registration ID=" + regid;
-          Log.i("GCM",  msg);
+          Log.i("GCM",  regid);
 
         } catch (IOException ex) {
-          msg = "Error :" + ex.getMessage();
+          Log.e("GCM", ex.getMessage());
 
         }
-        return msg;
+        return regid;
       }
 
       @Override
       protected void onPostExecute(String msg) {
-        message_field.setText(msg + "\n");
+        try {
+          sendPost(true, msg);
+        } catch (Exception e) {
+          e.printStackTrace();
+        }
       }
     }.execute(null, null, null);
   }
@@ -177,7 +181,7 @@ getRegId();
   // TODO Refactor GET and SET to remove duplicate code.
   // HTTP GET request
   private String sendGet() throws Exception {
-    URL obj = new URL(URL);
+    URL obj = new URL(BASE_URL + "posts");
     HttpURLConnection con = (HttpURLConnection) obj.openConnection();
 
     // optional default is GET
@@ -202,8 +206,8 @@ getRegId();
   }
 
   // HTTP POST request
-  private void sendPost(String msg) throws Exception {
-    URL obj = new URL(URL);
+  private void sendPost(boolean init, String msg) throws Exception {
+    URL obj = new URL(BASE_URL + (init ? "register" : "posts"));
     HttpURLConnection con = (HttpURLConnection) obj.openConnection();
 
     //add request header
