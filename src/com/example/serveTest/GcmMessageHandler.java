@@ -34,9 +34,15 @@ public class GcmMessageHandler extends IntentService {
     // in your BroadcastReceiver.
     String messageType = gcm.getMessageType(intent);
 
-    mes = extras.getString("title");
+    mes = extras.getString("id");
     showToast();
-    Log.i("GCM", "Received : (" +messageType+")  "+extras.getString("title"));
+    Log.i("GCM", "Received : (" +messageType+")  "+extras.getString("id"));
+
+    //put whatever data you want to send, if any
+    intent.putExtra("message", mes);
+
+    //send broadcast
+    getApplicationContext().sendBroadcast(intent);
 
     GcmBroadcastReceiver.completeWakefulIntent(intent);
 
@@ -45,7 +51,7 @@ public class GcmMessageHandler extends IntentService {
   public void showToast(){
     handler.post(new Runnable() {
       public void run() {
-        Toast.makeText(getApplicationContext(),mes , Toast.LENGTH_LONG).show();
+        Toast.makeText(getApplicationContext(), "New message: " + mes, Toast.LENGTH_LONG).show();
       }
     });
 

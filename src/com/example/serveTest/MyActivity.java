@@ -3,7 +3,10 @@ package com.example.serveTest;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.StrictMode;
@@ -15,8 +18,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ScrollView;
 import android.widget.TextView;
-
-import org.json.JSONArray;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -38,6 +39,7 @@ public class MyActivity extends Activity {
   private GoogleCloudMessaging gcm;
   private String regid;
   private String PROJECT_NUMBER = "618780476868";
+  private Context context;
 
   /**
    * Called when the activity is first created.
@@ -51,6 +53,10 @@ public class MyActivity extends Activity {
     requestWindowFeature(Window.FEATURE_NO_TITLE);
 
     setContentView(R.layout.login);
+
+    context  = getApplicationContext();
+    //Start listening for GCM events
+    context.registerReceiver(mMessageReceiver, new IntentFilter("com.google.android.c2dm.intent.RECEIVE"));
 
     input_name = (EditText)findViewById(R.id.name);
 
@@ -120,7 +126,7 @@ public class MyActivity extends Activity {
             // TODO Refactor this bit so that it displays new messages correctly.
             // TODO Use Google Cloud Messaging to remove need to constantly check for messages.
             try {
-              String response = sendGet();
+              /*String response = sendGet();
               JSONArray jsonArray = new JSONArray(response);
 
               for (int i = 0; i < jsonArray.length(); i++) {
@@ -128,7 +134,7 @@ public class MyActivity extends Activity {
                 String message = jsonArray.getJSONObject(i).getString("message");
 
                 message_field.append("\n" + name + " - " + message);
-              }
+              }*/
             } catch (Exception e) {
               Log.e("Failed GET request:", e.getMessage());
             }
@@ -235,5 +241,29 @@ public class MyActivity extends Activity {
       response.append(inputLine);
     }
     in.close();
+  }
+
+  //Unregister receiver once done with app
+  @Override
+  protected void onDestroy() {
+    super.onDestroy();
+    context.unregisterReceiver(mMessageReceiver);
+  }
+
+
+  //This is the handler that will manager to process the broadcast intent
+  private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+    @Override
+    public void onReceive(Context context, Intent intent) {
+
+      // Extract data included in the Intent
+      String message = intent.getStringExtra("message");
+
+      appendToMessages(message);
+    }
+  };
+
+  public void appendToMessages(String message) {
+    message_field.append("\n" + name + " - " + message);
   }
 }
