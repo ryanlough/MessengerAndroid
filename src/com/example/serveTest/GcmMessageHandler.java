@@ -13,7 +13,9 @@ import android.widget.Toast;
  */
 public class GcmMessageHandler extends IntentService {
 
+  String name;
   String mes;
+
   private Handler handler;
   public GcmMessageHandler() {
     super("GcmMessageHandler");
@@ -34,11 +36,12 @@ public class GcmMessageHandler extends IntentService {
     // in your BroadcastReceiver.
     String messageType = gcm.getMessageType(intent);
 
-    mes = extras.getString("id");
+    name = extras.getString("name");
+    mes = extras.getString("message");
     showToast();
-    Log.i("GCM", "Received : (" +messageType+")  "+extras.getString("id"));
+    Log.i("GCM", "Received : (" +messageType+")  "+extras.getString("message"));
 
-    //put whatever data you want to send, if any
+    intent.putExtra("name", name);
     intent.putExtra("message", mes);
 
     //send broadcast

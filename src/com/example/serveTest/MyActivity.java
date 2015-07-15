@@ -255,15 +255,11 @@ public class MyActivity extends Activity {
   private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
     @Override
     public void onReceive(Context context, Intent intent) {
-
-      // Extract data included in the Intent
-      String message = intent.getStringExtra("message");
-
-      appendToMessages(message);
+      appendToMessages(intent.getStringExtra("name"), intent.getStringExtra("message"));
     }
   };
 
-  public void appendToMessages(String message) {
+  public void appendToMessages(String name, String message) {
     message_field.append("\n" + name + " - " + message);
   }
 }
