@@ -7,6 +7,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.StrictMode;
@@ -47,6 +48,9 @@ public class MyActivity extends Activity {
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    SharedPreferences settings = getApplicationContext().getSharedPreferences("setting",
+                                                                              MODE_MULTI_PROCESS);
+    regid = settings.getString("regid", "");
     //Remove the header bar
     requestWindowFeature(Window.FEATURE_NO_TITLE);
     setContentView(R.layout.login);
@@ -187,8 +191,15 @@ public class MyActivity extends Activity {
   //Unregister receiver once done with app
   @Override
   protected void onDestroy() {
-    super.onDestroy();
     context.unregisterReceiver(mMessageReceiver);
+
+    SharedPreferences settings = getApplicationContext().getSharedPreferences("setting",
+                                                                              MODE_MULTI_PROCESS);
+    SharedPreferences.Editor editor = settings.edit();
+    editor.putString("regid", regid);
+    editor.apply();
+
+    super.onDestroy();
   }
 
 
